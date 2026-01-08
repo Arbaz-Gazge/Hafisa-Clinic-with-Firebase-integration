@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration | HealthCare Plus</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo-removebg-preview.png">
+</head>
+
+<body style="background: #f8fafc;">
+
+    <!-- Navbar -->
+    <div class="app-header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="index.html" style="text-decoration: none; font-size: 1.5rem;">🏠</a>
+            <h2 style="margin: 0; color: var(--primary-700); font-family: var(--font-display);">Patient Registration
+            </h2>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <span class="badge badge-front-desk" style="align-self: center;">Front Desk</span>
+            <button onclick="logout()" class="btn btn-secondary">Logout</button>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 1200px; padding-top: 20px; padding-bottom: 20px;">
+        <div class="app-layout">
+
+            <!-- Left Sidebar: Search & Actions -->
+            <div
+                style="background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 20px; height: fit-content;">
+                <h3 class="module-title" style="font-size: 1.2rem; margin-bottom: 15px;">Check Existing</h3>
+                <div class="form-group">
+                    <label class="form-label">Search by Phone</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="tel" id="regSearchPhone" class="form-input" placeholder="Enter 10-digit phone..."
+                            maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                            onkeypress="if(event.key === 'Enter') handlePhoneSearch();" style="margin-bottom:0;">
+                        <button onclick="handlePhoneSearch()" class="btn btn-primary" style="padding: 10px;">🔍</button>
+                    </div>
+                </div>
+
+                <div id="regSearchResult" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                    <p style="color: #666; font-size: 0.9em; text-align: center;">Enter phone number to check if patient
+                        is already registered.</p>
+                </div>
+            </div>
+
+            <!-- Right Content: Registration Form -->
+            <div class="app-content" id="registrationFormContainer">
+                <div class="success-message" id="registrationSuccess">
+                    <span class="icon">✓</span>
+                    <span>Patient registered successfully!</span>
+                </div>
+
+                <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 25px;">New
+                    Patient Details</h2>
+
+                <form id="registrationForm" onsubmit="handleRegistrationSubmit(event)">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label class="form-label" for="patientName">Patient's Name <span
+                                    class="required">*</span></label>
+                            <input type="text" id="patientName" name="patientName" class="form-input"
+                                placeholder="Enter full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Gender <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <label class="radio-label"><input type="radio" name="gender" value="Male"
+                                        required><span>Male</span></label>
+                                <label class="radio-label"><input type="radio" name="gender" value="Female"
+                                        required><span>Female</span></label>
+                                <label class="radio-label"><input type="radio" name="gender" value="Other"
+                                        required><span>Other</span></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="phoneNumber">Phone Number <span
+                                    class="required">*</span></label>
+                            <div class="phone-input-wrapper">
+                                <span class="phone-prefix">🇮🇳 +91</span>
+                                <input type="tel" id="phoneNumber" name="phoneNumber" class="form-input phone-input"
+                                    placeholder="10-digit number" pattern="[0-9]{10}" maxlength="10"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="dateOfBirth">Date of Birth <span
+                                    class="required">*</span></label>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-input"
+                                onchange="calculateAgeFromDOB()" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="age">Age <span class="required">*</span></label>
+                            <input type="number" id="age" name="age" class="form-input" placeholder="Enter age" min="0"
+                                max="150" oninput="calculateDOBFromAge()" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label" for="address">Address <span class="required">*</span></label>
+                            <textarea id="address" name="address" class="form-textarea"
+                                placeholder="Enter complete address" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="button-group" style="margin-top: 30px;">
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; padding: 15px; font-size: 1.1em;">
+                            <span>💾</span> Register Patient
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Components -->
+    <div id="customConfirmOverlay" class="custom-confirm-overlay">
+        <div class="custom-confirm-box">
+            <div class="confirm-title" id="confirmTitle">Clinic System</div>
+            <div class="confirm-msg" id="confirmMessage"></div>
+            <input type="text" id="confirmInput" class="confirm-input">
+            <div class="confirm-actions">
+                <button class="btn-confirm btn-confirm-cancel" id="confirmCancelBtn">Cancel</button>
+                <button class="btn-confirm btn-confirm-ok" id="confirmOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="globalLoader" class="loader-overlay">
+        <div class="loader-spinner"></div>
+        <div class="loader-text" id="loaderText">Loading...</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-functions.js"></script>
+    <script src="core.js"></script>
+    <script src="registration.js"></script>
+</body>
+
+</html>

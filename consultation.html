@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Consultation | HealthCare Plus</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo-removebg-preview.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+
+<body style="background: #f8fafc;">
+
+    <!-- Navbar -->
+    <div class="app-header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="index.html" style="text-decoration: none; font-size: 1.5rem;">🏠</a>
+            <h2 style="margin: 0; color: var(--primary-700); font-family: var(--font-display);">Doctor Consultation</h2>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <span class="badge badge-care-prof" style="align-self: center;">Care Professional</span>
+            <button onclick="logout()" class="btn btn-secondary">Logout</button>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 1400px; padding-top: 20px; padding-bottom: 20px;">
+        <div class="app-layout">
+
+            <!-- Left Sidebar: Patient Lists -->
+            <div class="app-sidebar">
+                <!-- Tabs -->
+                <div style="display: flex; border-bottom: 1px solid #e2e8f0;">
+                    <button class="tab-btn active" id="tabOpen" onclick="switchTab('open')"
+                        style="flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: 600; border-bottom: 3px solid var(--primary-500);">Open
+                        Patients</button>
+                    <button class="tab-btn" id="tabClosed" onclick="switchTab('closed')"
+                        style="flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent;">Closed</button>
+                </div>
+
+                <!-- Date Filter & Search -->
+                <div style="padding: 15px; border-bottom: 1px solid #e2e8f0;">
+                    <input type="text" id="searchPatientInput" class="form-input" placeholder="Search Name/Phone..."
+                        oninput="filterPatients()" style="margin-bottom: 10px;">
+                    <input type="text" id="filterDate" class="form-input" placeholder="Select Date Range..."
+                        style="font-size: 14px; background-color: #fff;">
+                </div>
+
+                <!-- Patient List Container -->
+                <div id="patientListContainer" style="flex: 1; overflow-y: auto; padding: 10px;">
+                    <div style="padding: 20px; text-align: center;">Loading patients...</div>
+                </div>
+            </div>
+
+            <!-- Right Content: Consultation Form -->
+            <div id="consultationContent" class="app-content" style="display: none;">
+                <!-- Selected Patient Header -->
+                <div style="margin-bottom: 30px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px;">
+                    <h2 id="activePatientName" style="margin: 0 0 10px 0;">Patient Name</h2>
+                    <div style="display: flex; gap: 20px; color: var(--gray-600); font-size: 0.9em; flex-wrap: wrap;">
+                        <span id="activePatientAge"></span>
+                        <span id="activePatientGender"></span>
+                        <span id="activePatientPhone"></span>
+                    </div>
+                </div>
+
+                <!-- Previous History -->
+                <div id="previousHistorySection"
+                    style="margin-bottom: 30px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: none;">
+                    <h3 style="margin-top: 0; font-size: 1.1em; color: var(--gray-700);">Previous Consultation History
+                    </h3>
+                    <div id="historyContent"></div>
+                </div>
+
+                <!-- New Consultation Form -->
+                <form id="fullConsultationForm" onsubmit="handleFullConsultationSubmit(event)">
+                    <input type="hidden" id="currentPatientId">
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label class="form-label">Chief Complaints <span class="required">*</span></label>
+                            <textarea id="fullChiefComplaints" class="form-textarea" required></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">History</label>
+                            <textarea id="fullHistory" class="form-textarea"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Investigation (Reports/Tests)</label>
+                            <textarea id="fullInvestigation" class="form-textarea"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Diagnosis <span class="required">*</span></label>
+                            <textarea id="fullDiagnosis" class="form-textarea" required></textarea>
+                        </div>
+
+                        <!-- Structured Medication UI -->
+                        <div class="form-group full-width medication-section">
+                            <label class="form-label">Medication <span class="required">*</span></label>
+                            <div class="medication-card">
+                                <div class="medication-inputs">
+                                    <div class="med-row">
+                                        <div class="med-col med-name">
+                                            <input type="text" id="medName" class="form-input" placeholder="Medicine *">
+                                        </div>
+                                        <div class="med-col med-unit">
+                                            <select id="medUnit" class="form-input" onchange="calculateMedQty()">
+                                                <option value="">Unit</option>
+                                                <option value="Tab">Tab</option>
+                                                <option value="Cap">Cap</option>
+                                                <option value="Syr">Syr</option>
+                                                <option value="Inj">Inj</option>
+                                                <option value="ml">ml</option>
+                                                <option value="mg">mg</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="med-row">
+                                        <div class="med-col med-dosage-triple">
+                                            <div class="dosage-triple-container">
+                                                <input type="number" id="medDosageM" class="form-input dosage-mini"
+                                                    placeholder="M" oninput="calculateMedQty()" min="0">
+                                                <span>-</span>
+                                                <input type="number" id="medDosageA" class="form-input dosage-mini"
+                                                    placeholder="A" oninput="calculateMedQty()" min="0">
+                                                <span>-</span>
+                                                <input type="number" id="medDosageN" class="form-input dosage-mini"
+                                                    placeholder="N" oninput="calculateMedQty()" min="0">
+                                            </div>
+                                            <small
+                                                style="font-size: 0.75em; color: #64748b; margin-top: 5px; display: block; font-weight: 500;">Dosage
+                                                Frequency (Mor-Aft-Nit)</small>
+                                        </div>
+                                        <div class="med-col med-days">
+                                            <input type="number" id="medDays" class="form-input" placeholder="Days *"
+                                                oninput="calculateMedQty()">
+                                        </div>
+                                        <div class="med-col med-qty">
+                                            <input type="number" id="medQty" class="form-input"
+                                                placeholder="Quantity *">
+                                        </div>
+                                        <div class="med-col med-info">
+                                            <select id="medInfo" class="form-input">
+                                                <option value="">Dosage Info *</option>
+                                                <option value="After Meal">After Meal</option>
+                                                <option value="Before Meal">Before Meal</option>
+                                                <option value="Empty Stomach">Empty Stomach</option>
+                                                <option value="Bed Time">Bed Time</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="med-row">
+                                        <div class="med-col med-remarks">
+                                            <input type="text" id="medRemarks" class="form-input" placeholder="Remarks">
+                                        </div>
+                                    </div>
+                                    <div class="med-row med-actions">
+                                        <button type="button" class="btn btn-secondary"
+                                            onclick="resetMedicationFields()">Reset</button>
+                                        <button type="button" class="btn btn-primary"
+                                            onclick="addMedicationRow()">Add</button>
+                                    </div>
+                                </div>
+
+                                <div class="medication-list-container">
+                                    <h4 class="med-list-title">Prescribed Medicines</h4>
+                                    <div class="table-responsive">
+                                        <table class="med-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Medicine</th>
+                                                    <th>Dosage</th>
+                                                    <th>Days</th>
+                                                    <th>Quantity</th>
+                                                    <th>Dosage Info</th>
+                                                    <th>Remarks</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="medicationListBody"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Save & Close Consultation</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState"
+                style="background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 30px; height: calc(100vh - 150px); display: flex; align-items: center; justify-content: center; color: var(--gray-400); flex-direction: column;">
+                <div style="font-size: 3rem; margin-bottom: 20px;">👈</div>
+                <h3>Select a patient from the list to start consultation</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Components -->
+    <div id="customConfirmOverlay" class="custom-confirm-overlay">
+        <div class="custom-confirm-box">
+            <div class="confirm-title" id="confirmTitle">Clinic System</div>
+            <div class="confirm-msg" id="confirmMessage"></div>
+            <input type="text" id="confirmInput" class="confirm-input">
+            <div class="confirm-actions">
+                <button class="btn-confirm btn-confirm-cancel" id="confirmCancelBtn">Cancel</button>
+                <button class="btn-confirm btn-confirm-ok" id="confirmOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="globalLoader" class="loader-overlay">
+        <div class="loader-spinner"></div>
+        <div class="loader-text" id="loaderText">Loading...</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-functions.js"></script>
+    <script src="core.js"></script>
+    <script src="consultation.js"></script>
+</body>
+
+</html>

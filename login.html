@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | HealthCare Plus</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo-removebg-preview.png">
+</head>
+
+<body
+    style="background: #f1f5f9; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+
+    <div class="modal"
+        style="display: block; position: static; max-width: 450px; width: 100%; box-shadow: var(--shadow-xl);">
+        <div class="modal-header">
+            <h2 class="modal-title" id="loginTitle">System Login</h2>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <img src="logo-removebg-preview.png" alt="Logo" style="height: 60px;">
+                <p style="color: var(--gray-600); margin-top: 10px;">Please enter your credentials to access the module.
+                </p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="loginUsername" class="form-input" placeholder="Enter username" required
+                        autofocus>
+                </div>
+                <div class="form-group mt-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Enter password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-6"
+                    style="width: 100%; padding: 12px; font-size: 1.1em;">
+                    Login to System
+                </button>
+                <div id="loginError"
+                    style="color: var(--error); margin-top: 15px; text-align: center; display: none; background: #fee2e2; padding: 10px; border-radius: 6px; font-size: 0.9em;">
+                </div>
+
+                <div style="margin-top: 25px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                    <a href="index.html" style="color: var(--primary-600); text-decoration: none; font-weight: 500;">←
+                        Back to Home</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- UI Components -->
+    <div id="customConfirmOverlay" class="custom-confirm-overlay">
+        <div class="custom-confirm-box">
+            <div class="confirm-title" id="confirmTitle">Clinic System</div>
+            <div class="confirm-msg" id="confirmMessage"></div>
+            <input type="text" id="confirmInput" class="confirm-input">
+            <div class="confirm-actions">
+                <button class="btn-confirm btn-confirm-cancel" id="confirmCancelBtn">Cancel</button>
+                <button class="btn-confirm btn-confirm-ok" id="confirmOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="globalLoader" class="loader-overlay">
+        <div class="loader-spinner"></div>
+        <div class="loader-text" id="loaderText">Loading...</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="core.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Set context title
+        const params = new URLSearchParams(window.location.search);
+        const module = params.get('module');
+        if (module === 'registration') document.getElementById('loginTitle').textContent = 'Front Desk Login';
+        if (module === 'consultation') document.getElementById('loginTitle').textContent = 'Doctor Login';
+    </script>
+</body>
+
+</html>

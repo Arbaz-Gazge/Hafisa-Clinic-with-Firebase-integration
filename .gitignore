@@ -1,0 +1,5 @@
+# Ignore sensitive Firebase config
+firebase-config.js
+
+# Ignore specific documents
+LETTER1 (1).docx
