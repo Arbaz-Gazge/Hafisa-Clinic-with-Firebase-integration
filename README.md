@@ -37,56 +37,7 @@ clinic/
 └── FIREBASE_INTEGRATION_GUIDE.md  # Detailed Firebase guide
 ```
 
-## 🚀 Quick Start
 
-### Option 1: Local Only (No Firebase)
-1. Open `index.html` in your web browser
-2. Start using the application
-3. Data will be saved in browser's local storage
-
-### Option 2: With Firebase (Recommended)
-1. Follow the steps in `FIREBASE_SETUP.md`
-2. Update `firebase-config.js` with your credentials
-3. Open `index.html` in your browser
-4. Data will sync to cloud automatically!
-
-## 🔥 Firebase Setup (5 Minutes)
-
-### Step 1: Create Firebase Project
-```
-1. Go to: https://console.firebase.google.com/
-2. Click "Add project"
-3. Name: "Hospital Management System"
-4. Create project
-```
-
-### Step 2: Enable Firestore
-```
-1. Go to "Build" → "Firestore Database"
-2. Click "Create database"
-3. Choose "Start in test mode"
-4. Enable
-```
-
-### Step 3: Get Configuration
-```
-1. Click Web icon (</>)
-2. Register app
-3. Copy the firebaseConfig object
-```
-
-### Step 4: Update Config File
-Open `firebase-config.js` and replace:
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",              // ← Your actual API key
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-```
 
 ### Step 5: Test
 Open `index.html` and check the browser console for:
@@ -98,7 +49,7 @@ Open `index.html` and check the browser console for:
 
 **That's it!** Your app is now cloud-enabled! 🎉
 
-## 💡 How to Use
+## How to Use
 
 ### Register a Patient
 1. Click **"Register Patient"** button
@@ -124,7 +75,7 @@ Open `index.html` and check the browser console for:
 5. Click **"Save Consultation"**
 6. Consultation is linked to the patient and saved
 
-## 🎨 Design Features
+## Design Features
 
 - **Modern UI**: Clean, professional medical aesthetic
 - **Responsive**: Works on desktop, tablet, and mobile
@@ -173,12 +124,12 @@ window.firebaseDB.loadFirebaseToLocal()
 ```javascript
 {
   id: "unique_id",
-  name: "John Doe",
+  name: "Hell",
   gender: "Male",
   phone: "1234567890",
   dateOfBirth: "1990-01-01",
   age: "35",
-  address: "123 Main St",
+  address: "Parel, Mumbai",
   registrationDate: "2025-12-30T10:00:00.000Z"
 }
 ```
@@ -198,12 +149,6 @@ window.firebaseDB.loadFirebaseToLocal()
 }
 ```
 
-## 🔒 Security Notes
-
-### For Development (Current Setup)
-- Firestore is in "test mode"
-- Anyone can read/write data
-- **DO NOT use in production!**
 
 ### For Production
 Update Firestore rules to:
@@ -233,13 +178,8 @@ firebase init hosting
 firebase deploy
 ```
 
-### Option 2: Any Web Server
-Simply upload all files to your web server.
 
-### Option 3: GitHub Pages
-1. Create a GitHub repository
-2. Push your code
-3. Enable GitHub Pages in settings
+
 
 ## 📱 Browser Compatibility
 
@@ -288,21 +228,7 @@ Potential features to add:
 - [ ] PDF export for consultations
 - [ ] Email notifications
 
-## 📄 License
 
-This project is open source and available for educational and commercial use.
-
-## 🤝 Support
-
-For issues or questions:
-1. Check the documentation files
-2. Review browser console errors
-3. Consult Firebase documentation
-4. Check Stack Overflow
-
----
-
-**Built with ❤️ for better healthcare management**
 
 2 types of users login 
 1. Doctor
