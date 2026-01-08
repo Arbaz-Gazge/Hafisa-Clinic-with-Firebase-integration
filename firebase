@@ -1,8 +1,0 @@
-const firebaseConfig = {
-    apiKey: "AIzaSyDrKyLC5sXoefaSyGNmjiscApLbUS3nup0",
-    authDomain: "clinic-fd91f.firebaseapp.com",
-    projectId: "clinic-fd91f",
-    storageBucket: "clinic-fd91f.firebasestorage.app",
-    messagingSenderId: "569870191288",
-    appId: "1:569870191288:web:a64c5155931b662dd5824d"
-};

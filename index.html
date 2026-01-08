@@ -5,19 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Modern Hospital Management System - Patient Registration and Doctor Consultation">
-    <title>Hospital Management System | Patient Care & Medical Records</title>
+    <title>Hospital Management System | HealthCare Plus</title>
     <link rel="icon" type="image/png" href="logo-removebg-preview.png">
     <link rel="stylesheet" href="styles.css">
-    <!-- Flatpickr (Calendar Styling) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
+</head>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-
-<body>
+<body style="background: #f1f5f9;">
     <!-- Hospital Header -->
     <header class="header">
         <div class="header-content">
@@ -30,28 +23,30 @@
     <main class="container">
         <div class="modules-container">
             <!-- Registration Module Card -->
-            <article class="module-card registration" id="registrationCard">
+            <article class="module-card registration" id="registrationCard"
+                onclick="window.location.href='login.html?module=registration'">
                 <div class="module-icon">👤</div>
                 <h2 class="module-title">Patient Registration</h2>
                 <p class="module-description">
                     Register new patients with comprehensive demographic and contact information.
                     Streamline the admission process with our easy-to-use registration system.
                 </p>
-                <button class="module-button" onclick="openLoginModal('registration')">
+                <button class="module-button">
                     <span>Register Patient</span>
                     <span>→</span>
                 </button>
             </article>
 
             <!-- Doctor Consultation Module Card -->
-            <article class="module-card consultation" id="consultationCard">
+            <article class="module-card consultation" id="consultationCard"
+                onclick="window.location.href='login.html?module=consultation'">
                 <div class="module-icon">🩺</div>
                 <h2 class="module-title">Doctor Consultation</h2>
                 <p class="module-description">
                     Record detailed medical consultations including complaints, investigations,
                     diagnosis, and prescribed medications for comprehensive patient care.
                 </p>
-                <button class="module-button" onclick="openLoginModal('consultation')">
+                <button class="module-button">
                     <span>New Consultation</span>
                     <span>→</span>
                 </button>
@@ -59,469 +54,18 @@
         </div>
     </main>
 
-    <!-- Login Modal -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal" style="max-width: 400px;">
-            <div class="modal-header">
-                <h2 class="modal-title" id="loginTitle">Login</h2>
-                <button class="modal-close" onclick="closeLoginModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label class="form-label">Username</label>
-                        <input type="text" id="loginUsername" class="form-input" required>
-                    </div>
-                    <div class="form-group mt-4">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="loginPassword" class="form-input" required>
-                    </div>
-                    <!-- Hidden field to store which module the user is trying to access -->
-                    <input type="hidden" id="targetModule">
-
-                    <button type="submit" class="btn btn-primary mt-4" style="width: 100%;">
-                        Login
-                    </button>
-                    <p id="loginError" style="color: var(--error); margin-top: 10px; display: none;">Invalid credentials
-                    </p>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Full Screen Consultation View -->
-    <div class="full-screen-overlay" id="fullScreenConsultation"
-        style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #f8fafc; z-index: 2000; overflow-y: auto;">
-
-        <!-- Navbar -->
-        <div class="app-header">
-            <h2 style="margin: 0; color: var(--primary-700); font-family: var(--font-display);">Doctor Consultation</h2>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                <span class="badge badge-care-prof" style="align-self: center;">Logged in as Doctor</span>
-                <button onclick="closeFullScreenConsultation()" class="btn btn-secondary">Exit / Logout</button>
-            </div>
-        </div>
-
-        <div class="container" style="max-width: 1400px; padding-top: 20px; padding-bottom: 20px;">
-
-            <div class="app-layout">
-
-                <!-- Left Sidebar: Patient Lists -->
-                <div class="app-sidebar">
-
-                    <!-- Tabs -->
-                    <div style="display: flex; border-bottom: 1px solid #e2e8f0;">
-                        <button class="tab-btn active" id="tabOpen" onclick="switchTab('open')"
-                            style="flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent;">Open
-                            Patients</button>
-                        <button class="tab-btn" id="tabClosed" onclick="switchTab('closed')"
-                            style="flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent;">Closed</button>
-                    </div>
-
-                    <!-- Date Filter (Range) -->
-                    <div style="padding: 15px; border-bottom: 1px solid #e2e8f0;">
-                        <input type="text" id="searchPatientInput" class="form-input" placeholder="Search Name/Phone..."
-                            oninput="filterPatients()" style="margin-bottom: 10px;">
-                        <input type="text" id="filterDate" class="form-input" placeholder="Select Date Range..."
-                            style="font-size: 14px; background-color: #fff;">
-                    </div>
-
-                    <!-- Patient List Container -->
-                    <div id="patientListContainer" style="flex: 1; overflow-y: auto; padding: 10px;">
-                        <!-- List items will be injected here -->
-                    </div>
-                </div>
-
-                <!-- Right Content: Consultation Form -->
-                <div id="consultationContent" class="app-content" style="display: none;">
-
-                    <!-- Selected Patient Header -->
-                    <div style="margin-bottom: 30px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px;">
-                        <h2 id="activePatientName" style="margin: 0 0 10px 0;">Select a Patient</h2>
-                        <div
-                            style="display: flex; gap: 20px; color: var(--gray-600); font-size: 0.9em; flex-wrap: wrap;">
-                            <span id="activePatientAge"></span>
-                            <span id="activePatientGender"></span>
-                            <span id="activePatientPhone"></span>
-                        </div>
-                    </div>
-
-                    <!-- Previous History (Accordion style or visible) -->
-                    <div id="previousHistorySection"
-                        style="margin-bottom: 30px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; display: none;">
-                        <h3 style="margin-top: 0; font-size: 1.1em; color: var(--gray-700);">Previous Consultation
-                            History</h3>
-                        <div id="historyContent"></div>
-                    </div>
-
-                    <!-- New Consultation Form (reused/adapted) -->
-                    <form id="fullConsultationForm" onsubmit="handleFullConsultationSubmit(event)">
-                        <input type="hidden" id="currentPatientId">
-
-                        <div class="form-grid">
-                            <div class="form-group full-width">
-                                <label class="form-label">Chief Complaints <span class="required">*</span></label>
-                                <textarea id="fullChiefComplaints" class="form-textarea" required></textarea>
-                            </div>
-                            <!-- History moved here -->
-                            <div class="form-group full-width">
-                                <label class="form-label">History</label>
-                                <textarea id="fullHistory" class="form-textarea"></textarea>
-                            </div>
-                            <div class="form-group full-width">
-                                <label class="form-label">Investigation (Reports/Tests)</label>
-                                <textarea id="fullInvestigation" class="form-textarea"></textarea>
-                            </div>
-                            <div class="form-group full-width">
-                                <label class="form-label">Diagnosis <span class="required">*</span></label>
-                                <textarea id="fullDiagnosis" class="form-textarea" required></textarea>
-                            </div>
-
-                            <!-- Structured Medication UI -->
-                            <div class="form-group full-width medication-section">
-                                <label class="form-label">Medication <span class="required">*</span></label>
-                                <div class="medication-card">
-                                    <div class="medication-inputs">
-                                        <div class="med-row">
-                                            <div class="med-col med-name">
-                                                <input type="text" id="medName" class="form-input"
-                                                    placeholder="Medicine *">
-                                            </div>
-                                            <div class="med-col med-unit">
-                                                <select id="medUnit" class="form-input" onchange="calculateMedQty()">
-                                                    <option value="">Unit</option>
-                                                    <option value="Tab">Tab</option>
-                                                    <option value="Cap">Cap</option>
-                                                    <option value="Syr">Syr</option>
-                                                    <option value="Inj">Inj</option>
-                                                    <option value="ml">ml</option>
-                                                    <option value="mg">mg</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="med-row">
-                                            <div class="med-col med-dosage-triple">
-                                                <div class="dosage-triple-container">
-                                                    <input type="number" id="medDosageM" class="form-input dosage-mini"
-                                                        placeholder="M" oninput="calculateMedQty()" min="0">
-                                                    <span>-</span>
-                                                    <input type="number" id="medDosageA" class="form-input dosage-mini"
-                                                        placeholder="A" oninput="calculateMedQty()" min="0">
-                                                    <span>-</span>
-                                                    <input type="number" id="medDosageN" class="form-input dosage-mini"
-                                                        placeholder="N" oninput="calculateMedQty()" min="0">
-                                                </div>
-                                                <small
-                                                    style="font-size: 0.75em; color: #64748b; margin-top: 5px; display: block; font-weight: 500;">Dosage
-                                                    Frequency (Mor-Aft-Nit)</small>
-                                            </div>
-                                            <div class="med-col med-days">
-                                                <input type="number" id="medDays" class="form-input"
-                                                    placeholder="Days *" oninput="calculateMedQty()">
-                                            </div>
-                                            <div class="med-col med-qty">
-                                                <div class="qty-input-group">
-                                                    <input type="number" id="medQty" class="form-input"
-                                                        placeholder="Quantity *">
-                                                </div>
-                                            </div>
-                                            <div class="med-col med-info">
-                                                <select id="medInfo" class="form-input">
-                                                    <option value="">Dosage Info *</option>
-                                                    <option value="After Meal">After Meal</option>
-                                                    <option value="Before Meal">Before Meal</option>
-                                                    <option value="Empty Stomach">Empty Stomach</option>
-                                                    <option value="Bed Time">Bed Time</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="med-row">
-                                            <div class="med-col med-remarks">
-                                                <input type="text" id="medRemarks" class="form-input"
-                                                    placeholder="Remarks">
-                                            </div>
-                                        </div>
-                                        <div class="med-row med-actions">
-                                            <button type="button" class="btn btn-secondary"
-                                                onclick="resetMedicationFields()">Reset</button>
-                                            <button type="button" class="btn btn-primary"
-                                                onclick="addMedicationRow()">Add</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="medication-list-container">
-                                        <h4 class="med-list-title">Prescribed Medicines</h4>
-                                        <div class="table-responsive">
-                                            <table class="med-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Medicine</th>
-                                                        <th>Dosage</th>
-                                                        <th>Days</th>
-                                                        <th>Quantity</th>
-                                                        <th>Dosage Info</th>
-                                                        <th>Remarks</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="medicationListBody">
-                                                    <!-- Dynamic Medications -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" id="fullMedication" required>
-                            </div>
-                        </div>
-
-                        <div class="button-group">
-                            <button type="submit" class="btn btn-primary">Save & Close Consultation</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Empty State -->
-                <div id="emptyState"
-                    style="background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 30px; height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center; color: var(--gray-400); flex-direction: column;">
-                    <div style="font-size: 3rem; margin-bottom: 20px;">👈</div>
-                    <h3>Select a patient from the list to start consultation</h3>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Full Screen Registration View -->
-    <div class="full-screen-overlay" id="fullScreenRegistration"
-        style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #f8fafc; z-index: 2000; overflow-y: auto;">
-
-        <!-- Navbar -->
-        <div class="app-header">
-            <h2 style="margin: 0; color: var(--primary-700); font-family: var(--font-display);">Patient Registration
-            </h2>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                <span class="badge badge-front-desk" style="align-self: center;">Front Desk</span>
-                <button onclick="closeFullScreenRegistration()" class="btn btn-secondary">Exit</button>
-            </div>
-        </div>
-
-        <div class="container" style="max-width: 1200px; padding-top: 20px; padding-bottom: 20px;">
-            <div class="app-layout">
-
-                <!-- Left Sidebar: Search & Actions -->
-                <div
-                    style="background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 20px; height: fit-content;">
-                    <h3 class="module-title" style="font-size: 1.2rem; margin-bottom: 15px;">Check Existing</h3>
-                    <div class="form-group">
-                        <label class="form-label">Search by Phone</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="tel" id="regSearchPhone" class="form-input"
-                                placeholder="Enter 10-digit phone..." maxlength="10"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                onkeypress="if(event.key === 'Enter') handlePhoneSearch();" style="margin-bottom:0;">
-                            <button onclick="handlePhoneSearch()" class="btn btn-primary"
-                                style="padding: 10px;">🔍</button>
-                        </div>
-                    </div>
-
-                    <div id="regSearchResult" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
-                        <!-- Results injected here -->
-                        <p style="color: #666; font-size: 0.9em; text-align: center;">Enter phone number to check if
-                            patient is already registered.</p>
-                    </div>
-                </div>
-
-                <!-- Right Content: Registration Form -->
-                <div class="app-content" id="registrationFormContainer">
-                    <div class="success-message" id="registrationSuccess">
-                        <span class="icon">✓</span>
-                        <span>Patient registered successfully!</span>
-                    </div>
-
-                    <h2
-                        style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 25px;">
-                        New Patient Details</h2>
-
-                    <form id="registrationForm" onsubmit="handleRegistrationSubmit(event)">
-                        <div class="form-grid">
-                            <div class="form-group full-width">
-                                <label class="form-label" for="patientName">Patient's Name <span
-                                        class="required">*</span></label>
-                                <input type="text" id="patientName" name="patientName" class="form-input"
-                                    placeholder="Enter full name" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Gender <span class="required">*</span></label>
-                                <div class="radio-group">
-                                    <label class="radio-label"><input type="radio" name="gender" value="Male"
-                                            required><span>Male</span></label>
-                                    <label class="radio-label"><input type="radio" name="gender" value="Female"
-                                            required><span>Female</span></label>
-                                    <label class="radio-label"><input type="radio" name="gender" value="Other"
-                                            required><span>Other</span></label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="phoneNumber">Phone Number <span
-                                        class="required">*</span></label>
-                                <div class="phone-input-wrapper">
-                                    <span class="phone-prefix">🇮🇳 +91</span>
-                                    <input type="tel" id="phoneNumber" name="phoneNumber" class="form-input phone-input"
-                                        placeholder="10-digit number" pattern="[0-9]{10}" maxlength="10"
-                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="dateOfBirth">Date of Birth <span
-                                        class="required">*</span></label>
-                                <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-input"
-                                    onchange="calculateAgeFromDOB()" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="age">Age <span class="required">*</span></label>
-                                <input type="number" id="age" name="age" class="form-input" placeholder="Enter age"
-                                    min="0" max="150" oninput="calculateDOBFromAge()" required>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label class="form-label" for="address">Address <span class="required">*</span></label>
-                                <textarea id="address" name="address" class="form-textarea"
-                                    placeholder="Enter complete address" required></textarea>
-                            </div>
-                        </div>
-
-                        <div class="button-group" style="margin-top: 30px;">
-                            <button type="submit" class="btn btn-primary"
-                                style="width: 100%; padding: 15px; font-size: 1.1em;">
-                                <span>💾</span> Register Patient
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Doctor Consultation Modal -->
-    <div class="modal-overlay" id="consultationModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title">Doctor Consultation</h2>
-                <button class="modal-close" onclick="closeConsultationModal()" aria-label="Close modal">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="success-message" id="consultationSuccess">
-                    <span class="icon">✓</span>
-                    <span>Consultation recorded successfully!</span>
-                </div>
-
-                <form id="consultationForm" onsubmit="handleConsultationSubmit(event)">
-                    <div class="form-grid">
-                        <div class="form-group full-width">
-                            <label class="form-label" for="patientSelect">
-                                Select Patient <span class="required">*</span>
-                            </label>
-                            <select id="patientSelect" name="patientSelect" class="form-select"
-                                onchange="loadPatientDetails()" required>
-                                <option value="">-- Select a registered patient --</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" id="selectedPatientInfo" style="display: none;">
-                            <div class="patient-info-card">
-                                <h3 class="patient-info-title">Patient Information</h3>
-                                <div class="patient-info-details">
-                                    <p><strong>Name:</strong> <span id="infoName"></span></p>
-                                    <p><strong>Age:</strong> <span id="infoAge"></span></p>
-                                    <p><strong>Gender:</strong> <span id="infoGender"></span></p>
-                                    <p><strong>Phone:</strong> <span id="infoPhone"></span></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group full-width">
-                            <label class="form-label" for="chiefComplaints">
-                                Chief Complaints <span class="required">*</span>
-                            </label>
-                            <textarea id="chiefComplaints" name="chiefComplaints" class="form-textarea"
-                                placeholder="Describe the patient's main complaints" required></textarea>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label class="form-label" for="investigation">
-                                Investigation (Reports/Tests)
-                            </label>
-                            <textarea id="investigation" name="investigation" class="form-textarea"
-                                placeholder="Enter investigation details, test results, or reports"></textarea>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label class="form-label" for="history">
-                                History (Medical/Patient History)
-                            </label>
-                            <textarea id="history" name="history" class="form-textarea"
-                                placeholder="Enter patient's medical history"></textarea>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label class="form-label" for="diagnosis">
-                                Diagnosis <span class="required">*</span>
-                            </label>
-                            <textarea id="diagnosis" name="diagnosis" class="form-textarea"
-                                placeholder="Enter diagnosis" required></textarea>
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label class="form-label" for="medication">
-                                Medication <span class="required">*</span>
-                            </label>
-                            <textarea id="medication" name="medication" class="form-textarea"
-                                placeholder="Enter prescribed medications with dosage and instructions"
-                                required></textarea>
-                        </div>
-                    </div>
-
-                    <div class="button-group">
-                        <button type="submit" class="btn btn-primary">
-                            <span>💾</span>
-                            <span>Save Consultation</span>
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="closeConsultationModal()">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase SDK (Version 10.7.1 - Compatible) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-    <!-- Firebase Configuration -->
-    <script src="firebase-config.js"></script>
-
-    <!-- Firebase Database Functions -->
-    <script src="firebase-functions.js"></script>
-
     <!-- Admin Page Button -->
     <button onclick="handleAdminAccess()" class="admin-float-btn" title="Go to Admin Panel"
         style="border: none; cursor: pointer;">
         ⚙️ Admin
     </button>
 
-    <!-- Custom Confirmation Modal -->
+    <!-- UI Components -->
     <div id="customConfirmOverlay" class="custom-confirm-overlay">
         <div class="custom-confirm-box">
             <div class="confirm-title" id="confirmTitle">Clinic System</div>
-            <div class="confirm-msg" id="confirmMessage">Are you sure?</div>
-            <input type="text" id="confirmInput" class="confirm-input" placeholder="" autocomplete="off">
+            <div class="confirm-msg" id="confirmMessage"></div>
+            <input type="text" id="confirmInput" class="confirm-input">
             <div class="confirm-actions">
                 <button class="btn-confirm btn-confirm-cancel" id="confirmCancelBtn">Cancel</button>
                 <button class="btn-confirm btn-confirm-ok" id="confirmOkBtn">OK</button>
@@ -529,15 +73,12 @@
         </div>
     </div>
 
-    <!-- Global Loader -->
-    <div id="globalLoader" class="loader-overlay">
-        <div class="loader-spinner"></div>
-        <div class="loader-text" id="loaderText">Loading...</div>
-    </div>
-
-
-    <!-- Application JavaScript -->
-    <script src="app.js"></script>
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="core.js"></script>
+    <script src="auth.js"></script>
 </body>
 
 </html>
